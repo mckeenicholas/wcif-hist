@@ -1,0 +1,3 @@
+# All crawling allowed, however there wont be anything useful outside of / since it requires login
+User-agent: *
+Disallow:

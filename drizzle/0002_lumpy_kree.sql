@@ -1,0 +1,1 @@
+ALTER TABLE "sessions" ALTER COLUMN "sessionId" SET DATA TYPE varchar(64);
