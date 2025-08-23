@@ -38,6 +38,15 @@ export const formatDateTime = (date: Date | string): string => {
 	});
 };
 
+export const formatTime = (date: Date | string): string => {
+	const dateObj = date instanceof Date ? date : new Date(date);
+
+	return dateObj.toLocaleTimeString([], {
+		hour: '2-digit',
+		minute: '2-digit'
+	});
+};
+
 export const capitalizeString = (str: string): string => {
 	return str
 		.split('-')

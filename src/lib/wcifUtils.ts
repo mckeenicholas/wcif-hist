@@ -120,3 +120,22 @@ export const formatAssignmentCode = (code: AssignmentCode): string => {
 			return capitalizeString(code);
 	}
 };
+
+export const getAssignmentCodeOrder = (code: AssignmentCode): number => {
+	switch (code) {
+		case 'competitor':
+			return 0;
+		case 'staff-judge':
+			return 1;
+		case 'staff-scrambler':
+			return 2;
+		case 'staff-runner':
+			return 3;
+		case 'staff-dataentry':
+			return 4;
+		case 'staff-announcer':
+			return 5;
+		default:
+			return 99;
+	}
+};

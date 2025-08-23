@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { FlattenedActivity } from '$lib/types';
 	import type { Schedule, Person, Assignment } from '$lib/types/wcif';
+	import { formatTime } from '$lib/util';
 	import {
 		flattenScheduleActivities,
 		formatAssignmentCode,
@@ -59,9 +60,7 @@
 	};
 </script>
 
-<div class="mx-auto max-w-4xl bg-white p-4 font-sans shadow-lg md:p-6">
-	<h2 class="mb-6 text-center text-2xl font-bold text-gray-800">Competitor Schedule</h2>
-
+<div class="border border-gray-200 bg-gray-100 p-4 font-sans md:p-6">
 	<div class="mb-6">
 		<label for="competitorsearch" class="mb-1 block text-sm font-medium text-gray-700"
 			>Search competitors</label
@@ -70,17 +69,17 @@
 			id="competitorsearch"
 			type="text"
 			placeholder="Search by name or WCA ID..."
-			class="w-full border border-gray-300 p-3 text-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+			class="w-full border border-gray-300 p-3 text-gray-700 focus:border-blue-500 focus:ring-blue-500"
 			bind:value={searchTerm}
 		/>
 	</div>
 
 	<Accordion.Root type="multiple" class="space-y-1">
 		{#each competitorsOrdered as competitor (competitor.wcaUserId)}
-			<Accordion.Item class="overflow-hidden border border-gray-200 shadow-sm">
+			<Accordion.Item class="overflow-hidden border border-gray-200">
 				<Accordion.Header class="flex">
 					<Accordion.Trigger
-						class="flex-1 bg-gray-50 px-4 py-2 text-left text-lg font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-100"
+						class="flex-1 cursor-pointer bg-gray-50 px-4 py-2 text-left text-lg font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-100"
 					>
 						<span class="block">{competitor.name} - {competitor.wcaId ?? 'No WCA ID'}</span>
 						<span class="text-sm font-medium"> Registration status: </span>
@@ -115,15 +114,9 @@
 										<div>
 											<span class="text-sm text-gray-500 italic">{activity.roomName}</span>
 											<span class="text-sm text-gray-500">
-												{new Date(activity.startTime).toLocaleTimeString([], {
-													hour: '2-digit',
-													minute: '2-digit'
-												})}
+												{formatTime(activity.startTime)}
 												-
-												{new Date(activity.endTime).toLocaleTimeString([], {
-													hour: '2-digit',
-													minute: '2-digit'
-												})}
+												{formatTime(activity.endTime)}
 											</span>
 										</div>
 									</div>
