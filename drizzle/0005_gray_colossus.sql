@@ -1,0 +1,1 @@
+ALTER TABLE "wcif_saves" ADD COLUMN "competitionEndDate" timestamp NOT NULL;

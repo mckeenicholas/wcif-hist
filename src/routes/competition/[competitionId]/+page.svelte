@@ -12,7 +12,7 @@
 	<ul>
 		{#each data.savedVersions as save (save.id)}
 			<li>
-				<a href="/{competitionId}/{save.id.toString()}">
+				<a href="{competitionId}/{save.id.toString()}">
 					{formatDateTime(save.savedAt)} - Saved by: {save.savedBy} - {save.description}
 				</a>
 			</li>

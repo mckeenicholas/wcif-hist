@@ -1,10 +1,11 @@
 import { db } from '$lib/server/db';
 import type { SessionInsert } from '$lib/server/db/schema';
 import { sessionsTable, usersTable } from '$lib/server/db/schema';
+import { createServerLog } from '$lib/server/serverUtils';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
 import type { RequestEvent } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { eq, lt } from 'drizzle-orm';
 
 const DAY_MS = 1000 * 60 * 60 * 24;
 const SESSION_LENGTH_DAYS = 7;
@@ -81,6 +82,18 @@ export async function getWCAToken(sessionId: string) {
 		.where(eq(sessionsTable.sessionId, sessionId));
 
 	return row.wcaToken;
+}
+
+export async function deleteExpiredSessions(): Promise<void> {
+	createServerLog('Starting expired session token cleanup...');
+	try {
+		const now = new Date();
+		await db.delete(sessionsTable).where(lt(sessionsTable.expiresAt, now));
+
+		createServerLog(`Successfully deleted expired session tokens.`);
+	} catch (error) {
+		createServerLog(`Failed to delete expired session tokens. Error: ${error}`, 'error');
+	}
 }
 
 export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date) {

@@ -12,7 +12,8 @@ const getUpcomingCompetitions = async (sessionId: string) => {
 
 	const url = new URL('https://www.worldcubeassociation.org/api/v0/competitions');
 	const startDate = new Date();
-	startDate.setDate(startDate.getDate() - 14);
+	// startDate.setDate(startDate.getDate() - 14);
+	startDate.setDate(startDate.getDate() - 90);
 
 	url.searchParams.append('managed_by_me', 'true');
 	url.searchParams.append('start', startDate.toISOString());

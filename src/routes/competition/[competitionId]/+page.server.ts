@@ -63,12 +63,16 @@ export const actions = {
 
 		const savedAt = new Date();
 
+		const endDate = new Date(wcifData.schedule.startDate);
+		endDate.setDate(endDate.getDate() + wcifData.schedule.numberOfDays);
+
 		try {
 			await client.putContent(itemKey, JSON.stringify(wcifData));
 
 			await db.insert(savedWCIFInfoTable).values({
 				s3Key: itemKey,
 				competitionId,
+				competitionEndDate: endDate,
 				description: description.toString(),
 				savedBy: userId,
 				savedAt

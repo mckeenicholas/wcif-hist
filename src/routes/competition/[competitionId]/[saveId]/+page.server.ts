@@ -1,5 +1,7 @@
+import { R2Storage } from '$lib/s3/client';
 import { db } from '$lib/server/db';
 import { savedWCIFInfoTable, usersTable } from '$lib/server/db/schema';
+import type { Competition } from '$lib/types/wcif';
 import { error, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
@@ -35,5 +37,9 @@ export const load: PageServerLoad = async (event) => {
 
 	const savedData = await getSaveInfo(saveId);
 
-	return { ...savedData };
+	const client = R2Storage.getInstance();
+	const wcifData = await client.getContent(savedData.s3Key);
+	const wcif: Competition = JSON.parse(wcifData);
+
+	return { ...savedData, wcif };
 };

@@ -1,3 +1,5 @@
+import type { Activity } from './types/wcif';
+
 export interface Avatar {
 	id: number | null;
 	status: string;
@@ -88,4 +90,9 @@ export interface WCAUserResponseInfo {
 		id: number;
 		wca_id: string;
 	};
+}
+
+export interface FlattenedActivity extends Activity {
+	roomName?: string;
+	roomColor?: string;
 }

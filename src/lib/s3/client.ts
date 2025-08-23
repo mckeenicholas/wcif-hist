@@ -1,5 +1,6 @@
 import { ACCESS_KEY_ID, ACCESS_KEY_SECRET, ACCOUNT_ID } from '$env/static/private';
 import {
+	DeleteObjectCommand,
 	GetObjectCommand,
 	PutObjectCommand,
 	S3Client,
@@ -13,6 +14,18 @@ export class R2Storage {
 
 	private constructor() {
 		this.s3Client = this.initS3Worker();
+	}
+
+	public async deleteContent(key: string): Promise<void> {
+		const deleteCommand = new DeleteObjectCommand({
+			Bucket: this.bucketName,
+			Key: key
+		});
+		try {
+			await this.s3Client.send(deleteCommand);
+		} catch (error) {
+			throw new Error(`Failed to delete content from S3: ${error}`);
+		}
 	}
 
 	public static getInstance(): R2Storage {

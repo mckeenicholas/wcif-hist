@@ -30,6 +30,8 @@ export type ActivityCode = string;
 /** A string representing a single scramble. */
 export type Scramble = string;
 
+export type RegistrationStatus = 'accepted' | 'pending' | 'deleted';
+
 // Object interfaces
 
 /** Represents a person related to the competition. */
@@ -60,7 +62,7 @@ export interface Avatar {
 export interface Registration {
 	wcaRegistrationId: number;
 	eventIds: string[];
-	status: 'accepted' | 'pending' | 'deleted';
+	status: RegistrationStatus;
 	guests: number;
 	comments: string;
 	administrativeNotes: string;

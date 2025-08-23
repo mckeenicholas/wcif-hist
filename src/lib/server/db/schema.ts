@@ -20,6 +20,7 @@ export const savedWCIFInfoTable = pgTable('wcif_saves', {
 	id: serial().primaryKey(),
 	s3Key: text().notNull().unique(),
 	competitionId: text().notNull(),
+	competitionEndDate: timestamp().notNull(),
 	description: text().notNull(),
 	savedBy: integer()
 		.references(() => usersTable.id, { onDelete: 'set null' })

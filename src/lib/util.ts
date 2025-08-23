@@ -37,3 +37,10 @@ export const formatDateTime = (date: Date | string): string => {
 		minute: '2-digit'
 	});
 };
+
+export const capitalizeString = (str: string): string => {
+	return str
+		.split('-')
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ');
+};
