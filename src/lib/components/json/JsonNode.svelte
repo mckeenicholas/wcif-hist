@@ -1,7 +1,6 @@
 <script lang="ts">
+	import type { JsonValue } from '.';
 	import JsonNode from './JsonNode.svelte';
-
-	type JsonValue = string | number | boolean | null | { [key: string]: JsonValue } | JsonValue[];
 
 	interface Props {
 		data: JsonValue;
