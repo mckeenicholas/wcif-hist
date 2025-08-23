@@ -20,6 +20,8 @@ const getUpcomingCompetitions = async (sessionId: string) => {
 
 	const response = await authFetch(url, wcaToken);
 
+	console.log(response);
+
 	if (!response.ok) {
 		throw Error('Invalid or expired WCA Token');
 	}

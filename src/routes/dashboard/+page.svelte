@@ -16,7 +16,7 @@
 
 {#if data.competitions}
 	<ul>
-		{#each data.competitions as competition}
+		{#each data.competitions as competition (competition.id)}
 			<li>
 				<a href="/competition/{competition.id}">
 					{competition.name} - {formatDate(competition.start_date)}
