@@ -9,6 +9,6 @@
 	const { data }: Props = $props();
 </script>
 
-<div class="max-w-full overflow-x-auto border border-gray-200 bg-gray-100 p-4 font-mono">
+<div class="max-w-full overflow-x-auto bg-gray-50 font-mono">
 	<JsonNode data={data as unknown as JsonValue} key="" level={0} />
 </div>

@@ -50,6 +50,11 @@ export const actions = {
 		const description = data.get('description') ?? '';
 
 		const userToken = await getWCAToken(event.locals.session!);
+
+		if (!userToken) {
+			return redirect(302, 'login');
+		}
+
 		const wcifResponse = await authFetch(
 			`https://api.worldcubeassociation.org/competitions/${competitionId}/wcif`,
 			userToken

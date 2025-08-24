@@ -1,7 +1,10 @@
+import { APPLICATION_SECRET } from '$env/static/private';
 import { db } from '$lib/server/db';
 import type { SessionInsert } from '$lib/server/db/schema';
 import { sessionsTable, usersTable } from '$lib/server/db/schema';
 import { createServerLog } from '$lib/server/serverUtils';
+import type { WCAOauthResponse } from '$lib/types';
+import { applicationID } from '$lib/util';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
 import type { RequestEvent } from '@sveltejs/kit';
@@ -9,7 +12,7 @@ import { eq, lt } from 'drizzle-orm';
 
 const DAY_MS = 1000 * 60 * 60 * 24;
 const SESSION_LENGTH_DAYS = 7;
-// const SESSION_RENEW_THRESHOLD_DAYS = 1;
+const SESSION_RENEW_THRESHOLD_DAYS = 1;
 
 export const sessionCookieName = 'auth-session';
 
@@ -19,13 +22,19 @@ export function generateSessionToken() {
 	return token;
 }
 
-export async function createSession(token: string, userId: number, wcaToken: string) {
+export async function createSession(
+	token: string,
+	userId: number,
+	wcaToken: string,
+	wcaRefreshToken: string
+) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 
 	const session: SessionInsert = {
 		sessionId,
 		wcaToken,
 		userId,
+		wcaRefreshToken,
 		expiresAt: new Date(Date.now() + DAY_MS * SESSION_LENGTH_DAYS)
 	};
 
@@ -57,14 +66,14 @@ export async function validateSessionToken(token: string) {
 		return { session: null, user: null, expiresAt: null };
 	}
 
-	// const renewSession = Date.now() >= expiresAt.getTime() - DAY_MS * SESSION_RENEW_THRESHOLD_DAYS;
-	// if (renewSession) {
-	// 	const newExpiryDate = new Date(Date.now() + DAY_MS * SESSION_LENGTH_DAYS);
-	// 	await db
-	// 		.update(sessionsTable)
-	// 		.set({ expiresAt: newExpiryDate })
-	// 		.where(eq(sessionsTable.sessionId, sessionId));
-	// }
+	const renewSession = Date.now() >= expiresAt.getTime() - DAY_MS * SESSION_RENEW_THRESHOLD_DAYS;
+	if (renewSession) {
+		const newExpiryDate = new Date(Date.now() + DAY_MS * SESSION_LENGTH_DAYS);
+		await db
+			.update(sessionsTable)
+			.set({ expiresAt: newExpiryDate })
+			.where(eq(sessionsTable.sessionId, sessionId));
+	}
 
 	return { session: sessionId, user, expiresAt };
 }
@@ -77,9 +86,34 @@ export async function invalidateSession(providedSessionId: string) {
 
 export async function getWCAToken(sessionId: string) {
 	const [row] = await db
-		.select({ wcaToken: sessionsTable.wcaToken })
+		.select({
+			wcaToken: sessionsTable.wcaToken,
+			refreshToken: sessionsTable.wcaRefreshToken,
+			expiresAt: sessionsTable.expiresAt
+		})
 		.from(sessionsTable)
 		.where(eq(sessionsTable.sessionId, sessionId));
+
+	if (!row) return null;
+
+	const now = Date.now();
+
+	if (now >= row.expiresAt.getTime()) {
+		const newTokens = await refreshWCAToken(row.refreshToken);
+
+		const newExpiry = new Date(newTokens.created_at * 1000 + newTokens.expires_in * 1000);
+
+		await db
+			.update(sessionsTable)
+			.set({
+				wcaToken: newTokens.access_token,
+				wcaRefreshToken: newTokens.refresh_token,
+				expiresAt: newExpiry
+			})
+			.where(eq(sessionsTable.sessionId, sessionId));
+
+		return newTokens.access_token;
+	}
 
 	return row.wcaToken;
 }
@@ -107,4 +141,26 @@ export function deleteSessionTokenCookie(event: RequestEvent) {
 	event.cookies.delete(sessionCookieName, {
 		path: '/'
 	});
+}
+
+export async function refreshWCAToken(refreshToken: string) {
+	const response = await fetch('https://www.worldcubeassociation.org/oauth/token', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams({
+			grant_type: 'refresh_token',
+			refresh_token: refreshToken,
+			client_id: applicationID,
+			client_secret: APPLICATION_SECRET
+		})
+	});
+
+	if (!response.ok) {
+		throw new Error(`Failed to refresh token: ${response.status}`);
+	}
+
+	const data: WCAOauthResponse = await response.json();
+	return data;
 }

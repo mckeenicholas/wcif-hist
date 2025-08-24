@@ -13,7 +13,8 @@ export const sessionsTable = pgTable('sessions', {
 		.references(() => usersTable.id, { onDelete: 'cascade' })
 		.notNull(),
 	expiresAt: timestamp().notNull(),
-	wcaToken: text().notNull()
+	wcaToken: text().notNull(),
+	wcaRefreshToken: text().notNull()
 });
 
 export const savedWCIFInfoTable = pgTable('wcif_saves', {

@@ -43,6 +43,13 @@
       "when": 1755968852933,
       "tag": "0005_gray_colossus",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1756011617534,
+      "tag": "0006_oval_silvermane",
+      "breakpoints": true
     }
   ]
 }

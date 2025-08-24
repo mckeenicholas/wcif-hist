@@ -92,6 +92,14 @@ export interface WCAUserResponseInfo {
 	};
 }
 
+export interface WCAOauthResponse {
+	access_token: string;
+	expires_in: number;
+	refresh_token: string;
+	scope: string;
+	created_at: number;
+}
+
 export interface FlattenedActivity extends Activity {
 	roomName?: string;
 	roomColor?: string;

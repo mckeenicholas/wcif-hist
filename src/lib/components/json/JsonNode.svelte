@@ -69,7 +69,7 @@
 	);
 </script>
 
-<div class="my-0.5" style="margin-left: {level * 20}px">
+<div class="my-0.5">
 	{#if isExpandable && hasContent}
 		<div
 			class="flex cursor-pointer items-center rounded px-2 py-1 transition-colors duration-200 select-none hover:bg-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-inset"
@@ -116,7 +116,7 @@
 		</div>
 
 		{#if isExpanded}
-			<div class="ml-2 border-l-2 border-gray-200 pl-1">
+			<div class="ml-2 border-l-2 border-gray-200 pl-6">
 				{#if dataType === 'object'}
 					{#each Object.entries(data as object) as [childKey, childValue], idx (idx)}
 						<JsonNode data={childValue} key={childKey} level={level + 1} />

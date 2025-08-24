@@ -60,7 +60,7 @@
 	};
 </script>
 
-<div class="border border-gray-200 bg-gray-100 p-4 font-sans md:p-6">
+<div class="font-sans">
 	<div class="mb-6">
 		<label for="competitorsearch" class="mb-1 block text-sm font-medium text-gray-700"
 			>Search competitors</label

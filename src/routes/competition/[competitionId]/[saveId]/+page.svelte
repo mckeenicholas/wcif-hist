@@ -9,7 +9,7 @@
 </script>
 
 <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-	<div class="mb-6 bg-gray-50 p-4 text-center text-sm text-gray-800">
+	<div class="mb-6 p-4 text-center text-sm text-gray-800">
 		<p class="font-medium">{data.description}</p>
 		<p class="mt-1 text-xs text-gray-600">
 			Saved by <span class="font-semibold">{data.savedByName}</span> on {new Date(
@@ -18,8 +18,8 @@
 		</p>
 	</div>
 
-	<Tabs.Root value="people" class="w-full bg-white p-2">
-		<Tabs.List class="grid w-full grid-cols-3  bg-gray-100 p-1">
+	<Tabs.Root value="people" class="w-full p-2">
+		<Tabs.List class="grid w-full grid-cols-3 bg-gray-200 p-1">
 			<Tabs.Trigger
 				value="people"
 				class="px-4 py-2 text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none data-[state=active]:bg-white data-[state=active]:shadow-sm"

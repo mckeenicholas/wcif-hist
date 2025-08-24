@@ -77,7 +77,7 @@
 	};
 </script>
 
-<div class="border border-gray-200 bg-gray-100 p-4 font-sans md:p-6">
+<div class=" font-sans">
 	<Accordion.Root type="multiple" class="space-y-1">
 		{#each flatSchedule as activity (activity.id)}
 			<Accordion.Item class="overflow-hidden border border-gray-200">
